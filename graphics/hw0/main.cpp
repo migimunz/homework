@@ -1,9 +1,7 @@
 #include <cstdio>
 #include <cstdlib>
-#include <GLUT/glut.h>
 
-// GLUT seems to be on its way out...
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+#include "glut.h"
 
 int oldx;
 int oldy;
@@ -75,6 +73,13 @@ int main(int argc, char **argv) {
   glutMouseFunc(mouseInput);
   glutMotionFunc(mouseMotion);
 
-  glClear(GL_COLOR_BUFFER_BIT);
+  int SIZE = 512 * 512 * 3;
+  unsigned char data[SIZE];
+  for(int i = 0; i < SIZE; ++i) {
+    data[i] = i;
+  }
+
+  // glClear(GL_COLOR_BUFFER_BIT);
+  glDrawPixels(512, 512, GL_RGB, GL_UNSIGNED_BYTE, data);
   glutMainLoop();
 }

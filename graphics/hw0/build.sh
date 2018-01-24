@@ -1,8 +1,8 @@
 case "$(uname)" in
 Darwin)
-  clang++ main.cpp -framework OpenGL -framework GLUT
+  clang++ -DDARWIN main.cpp -framework OpenGL -framework GLUT
   ;;
 *)
-  g++ main.cpp -lGL -lGLUT
+  g++ -DLINUX main.cpp -lGL -lGLU -lglut
   ;;
 esac
