@@ -3,7 +3,7 @@
 Implement a simple simulation of [semi-space garbage collection][1] in C++. From
 the linked Wikipedia article:
 
->>> The most straightforward approach is the _semi-space_ collector, which dates
+>  The most straightforward approach is the _semi-space_ collector,  which dates
 to 1969.  In this moving collector,  memory is partitioned into an equally sized
 "from space"  and  "to space".  Initially,  objects are  allocated in "to space"
 until it becomes full  and a collection cycle is triggered.  At the start of the
@@ -47,7 +47,7 @@ An example run (note that garbage collection runs twice,  once before failing to
 allocate `a3` and once before successfully allocating `a4`):
 
 ```
-[bashwhatever]$ ./a.out 20
+[bashorwhatever]$ ./a.out 20
 a1:4
 a2:5
 a3:6
@@ -67,12 +67,10 @@ l
 x
 ```
 
-Implementation details, so we can auto-grade:
+Implementation details (so we can auto-grade):
  - Garbage collection should only run when an allocation is requested, but won't
    fit in the current memory block.
- - When  allocating space,  always  allocate starting at  the smallest available
-   address within the current memory block.
- - When running  garbage collection,  preserve the order of any objects that are
-   copied into the new memory block.
+ - Always allocate objects at the smallest available offset (starting at 0).
+ - When running garbage collection, preserve the order of all objects.
 
 [1]: https://en.wikipedia.org/wiki/Tracing_garbage_collection#Copying_vs._mark-and-sweep_vs._mark-and-don.27t-sweep
