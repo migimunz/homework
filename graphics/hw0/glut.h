@@ -5,7 +5,7 @@
 #include <GLUT/glut.h>
 // GLUT seems to be on its way out...
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
-#elif defined LINUX
+#else
 #include <GL/glut.h>
 #endif
 

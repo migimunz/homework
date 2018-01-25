@@ -2,26 +2,42 @@
 #include <cstdlib>
 
 #include "glut.h"
+#include "image.h"
+
+const float COLORS[][3] = {
+  {0.0, 0.0, 0.0},
+  {1.0, 1.0, 1.0},
+  {1.0, 0.0, 0.0},
+  {0.0, 1.0, 0.0},
+  {0.0, 0.0, 1.0},
+  {0.0, 1.0, 1.0},
+  {1.0, 0.0, 1.0},
+  {1.0, 1.0, 0.0},
+  {1.0, 0.5, 0.0},
+  {0.5, 0.5, 0.5}
+};
+
+const char NAMES[][8] = {
+  "Black",
+  "White",
+  "Red",
+  "Green",
+  "Blue",
+  "Cyan",
+  "Magenta",
+  "Yellow",
+  "Orange",
+  "Grey"
+};
 
 int oldx;
 int oldy;
-
-const float COLORS[][3] = {
-  {1, 1, 1},
-  {1, 0, 0},
-  {0, 1, 0},
-  {0, 0, 1},
-  {1, 1, 0},
-  {1, 0, 1},
-  {0, 1, 1},
-  {0, 0, 0}
-};
 
 void checkGLErrors(const char* prefix) {
   GLenum error = glGetError();
   if(error != GL_NO_ERROR) {
     fprintf(stderr, "%s\n%s\n", prefix, gluErrorString(error));
-    exit(-1);
+    exit(1);
   }
 }
 
@@ -34,9 +50,24 @@ void keyboard(unsigned char key, int, int) {
   if(key == 27 || key == 'q' || key == 'Q') {
     exit(0);
   }
+  else if(key >= '0' && key <= '9') {
+    char buffer[32];
+    glColor3fv(COLORS[key - '0']);
+    sprintf(buffer, "SimpleDraw: %s", NAMES[key - '0']);
+    glutSetWindowTitle(buffer);
+    
+  }
+  else if(key == 'w' || key == 'W') {
+    int h = glutGet(GLUT_WINDOW_HEIGHT);
+    int w = glutGet(GLUT_WINDOW_WIDTH);
 
-  if(key >= '1' && key <= '8') {
-    glColor3fv(COLORS[key - '1']);
+    Image image(w, h);
+    glReadPixels(0, 0, w, h, GL_BGR, GL_UNSIGNED_BYTE, image.data());
+    save_bmp("SimpleDraw.bmp", image);
+  }
+  else if(key == ' ') {
+    glClear(GL_COLOR_BUFFER_BIT);
+    glutPostRedisplay();
   }
 }
 
@@ -61,25 +92,26 @@ void mouseMotion(int x, int y) {
   oldy = y;
 }
 
-int main(int argc, char **argv) {
+int main(int argc, char** argv) {
   glutInit(&argc, argv);
-
-  glutInitWindowSize(512, 512);
   glutInitDisplayMode(GLUT_SINGLE | GLUT_RGBA);
-  glutCreateWindow("SimpleDraw");
+
+  if(argc > 1) {
+    Image image = load_bmp(argv[1]);
+    glutInitWindowSize(image.width(), image.height());
+    glutCreateWindow("SimpleDraw: White");
+    glDrawPixels(image.width(), image.height(), GL_BGR, GL_UNSIGNED_BYTE, image.data());
+  }
+  else {
+    glutInitWindowSize(512, 512);
+    glutCreateWindow("SimpleDraw: White");
+    glClear(GL_COLOR_BUFFER_BIT);
+  }
 
   glutDisplayFunc(display);
   glutKeyboardFunc(keyboard);
   glutMouseFunc(mouseInput);
   glutMotionFunc(mouseMotion);
 
-  int SIZE = 512 * 512 * 3;
-  unsigned char data[SIZE];
-  for(int i = 0; i < SIZE; ++i) {
-    data[i] = i;
-  }
-
-  // glClear(GL_COLOR_BUFFER_BIT);
-  glDrawPixels(512, 512, GL_RGB, GL_UNSIGNED_BYTE, data);
   glutMainLoop();
 }
