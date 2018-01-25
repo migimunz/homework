@@ -1,1 +1,1 @@
-clang++ $OPTIONS -DDARWIN *.cpp -framework OpenGL -framework GLUT -Wall -Wextra -Werror
+clang++ -DDARWIN *.cpp -std=c++11 -framework OpenGL -framework GLUT -Wall -Wextra -Werror
